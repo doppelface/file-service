@@ -1,4 +1,4 @@
-package org.krechko.fileService.controller;
+package org.krechko.fileService.handler;
 
 import org.krechko.fileService.exception.ErrorResponse;
 import org.krechko.fileService.exception.FileServiceIOException;

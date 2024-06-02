@@ -15,12 +15,12 @@ public class FileController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void uploadFile(@RequestParam("file") MultipartFile file) {
-        fileService.uploadFile(file);
+    public String uploadFile(@RequestParam("file") MultipartFile file) {
+        return fileService.uploadFile(file);
     }
     @GetMapping("/{key}")
     @ResponseStatus(HttpStatus.OK)
-    public byte[] getFileFromS3ByKey(@PathVariable("key") String key) {
-        return fileService.getFileByKey(key);
+    public byte[] getFileFromS3Bucket(@PathVariable("key") String uniqueFileKey) {
+        return fileService.getFileFromS3(uniqueFileKey);
     }
 }
