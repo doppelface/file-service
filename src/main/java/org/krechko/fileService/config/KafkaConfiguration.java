@@ -11,7 +11,7 @@ import org.springframework.kafka.config.TopicBuilder;
 public class KafkaConfiguration {
     @Bean
     public NewTopic newTopic() {
-        return TopicBuilder.name("song-topic")
+        return TopicBuilder.name("song-to-save-topic")
                 .partitions(10)
                 .replicas(1)
                 .build();

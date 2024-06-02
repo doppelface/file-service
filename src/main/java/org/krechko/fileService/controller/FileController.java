@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
     private final FileService fileService;
 
-    @PostMapping("/upload")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void uploadFile(@RequestParam("file") MultipartFile file) {
         fileService.uploadFile(file);

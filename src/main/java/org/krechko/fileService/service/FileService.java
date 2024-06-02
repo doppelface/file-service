@@ -7,10 +7,8 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import lombok.RequiredArgsConstructor;
 import org.krechko.fileService.exception.FileServiceIOException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -36,7 +34,7 @@ public class FileService {
 
             s3client.putObject(bucketName, uniqueFileKey, file.getInputStream(), metadata);
 
-            kafkaTemplate.send("song-to-save-topic", uniqueFileKey);
+          //  kafkaTemplate.send("song-to-save-topic", uniqueFileKey);
         } catch (Exception exception) {
             throw new FileServiceIOException("Failed to upload file", exception);
 
