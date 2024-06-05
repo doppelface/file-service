@@ -26,14 +26,18 @@ public class S3ClientService {
 
     public String saveFileToS3Bucket(MultipartFile file) {
         try {
-            String uniqueFileKey = generateUniqueFileKey();
+            if (file != null && !file.isEmpty()) {
+                String uniqueFileKey = generateUniqueFileKey();
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(file.getSize());
-            metadata.setContentType(file.getContentType());
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentLength(file.getSize());
+                metadata.setContentType(file.getContentType());
 
-            s3client.putObject(bucketName, uniqueFileKey, file.getInputStream(), metadata);
-            return uniqueFileKey;
+                s3client.putObject(bucketName, uniqueFileKey, file.getInputStream(), metadata);
+                return uniqueFileKey;
+            } else {
+                return "No file provided or file is empty";
+            }
         } catch (Exception exception) {
             throw new FileServiceException("Failed to upload file", exception);
         }

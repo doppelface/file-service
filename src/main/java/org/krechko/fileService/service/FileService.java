@@ -14,7 +14,7 @@ public class FileService {
 
     public String uploadFile(MultipartFile file) {
         String uniqueFileKey = s3ClientService.saveFileToS3Bucket(file);
-        kafkaTemplate.send("song-to-save-topic", uniqueFileKey);
+      //  kafkaTemplate.send("song-to-save-topic", uniqueFileKey);
         return uniqueFileKey;
     }
 
