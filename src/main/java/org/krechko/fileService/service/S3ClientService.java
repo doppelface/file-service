@@ -5,11 +5,15 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import lombok.RequiredArgsConstructor;
-import org.krechko.fileService.exception.FileServiceIOException;
+import org.krechko.fileService.exception.FileServiceException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.UUID;
 
 @Service
@@ -22,7 +26,7 @@ public class S3ClientService {
 
     public String saveFileToS3Bucket(MultipartFile file) {
         try {
-            String uniqueFileKey = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+            String uniqueFileKey = generateUniqueFileKey();
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
@@ -31,19 +35,30 @@ public class S3ClientService {
             s3client.putObject(bucketName, uniqueFileKey, file.getInputStream(), metadata);
             return uniqueFileKey;
         } catch (Exception exception) {
-            throw new FileServiceIOException("Failed to upload file", exception);
-
+            throw new FileServiceException("Failed to upload file", exception);
         }
     }
 
-    public byte[] getFileFromS3Bucket(String uniqueFileKey) {
+    private String generateUniqueFileKey() {
+        try {
+            String template = UUID.randomUUID().toString();
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(template.getBytes(StandardCharsets.UTF_8));
+            return Base64.getUrlEncoder().encodeToString(hash);
+        } catch (Exception e) {
+            throw new FileServiceException("NoSuchAlgorithmException while generating key", e);
+        }
+    }
+
+    public byte[] getFile(String uniqueFileKey) {
         try {
             S3Object s3Object = s3client.getObject(bucketName, uniqueFileKey);
-            S3ObjectInputStream inputStream = s3Object.getObjectContent();
+            try (S3ObjectInputStream inputStream = s3Object.getObjectContent()) {
                 byte[] bytes = inputStream.readAllBytes();
-            return bytes;
+                return bytes;
+            }
         } catch (Exception exception) {
-            throw new FileServiceIOException("Failed to get file from S3", exception);
+            throw new FileServiceException("Failed to get file from S3", exception);
         }
     }
 }

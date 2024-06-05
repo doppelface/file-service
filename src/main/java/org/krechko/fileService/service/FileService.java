@@ -19,6 +19,6 @@ public class FileService {
     }
 
     public byte[] getFileFromS3(String uniqueFileKey) {
-        return s3ClientService.getFileFromS3Bucket(uniqueFileKey);
+        return s3ClientService.getFile(uniqueFileKey);
     }
 }

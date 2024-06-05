@@ -1,7 +1,7 @@
 package org.krechko.fileService.handler;
 
 import org.krechko.fileService.exception.ErrorResponse;
-import org.krechko.fileService.exception.FileServiceIOException;
+import org.krechko.fileService.exception.FileServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(FileServiceIOException.class)
+    @ExceptionHandler(FileServiceException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleFileServiceIOException(FileServiceIOException exception) {
+    public ErrorResponse handleFileServiceIOException(FileServiceException exception) {
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             errorResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
